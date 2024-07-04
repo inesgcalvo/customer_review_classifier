@@ -22,8 +22,6 @@ In this case, the classes are `__label__1` and `__label__2`, and there is only o
 
 (3-star reviews i.e. reviews with neutral sentiment were not included in the original),
 
-The review titles, followed by ':' and a space, are prepended to the text.
-
 Most of the reviews are in English, but there are a few in other languages, like Spanish.
 
 ### Source
