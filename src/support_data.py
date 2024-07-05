@@ -55,6 +55,7 @@ def detect_language(text):
         return 'unknown'
     
 
+
 def translate_text(text, translator):
     try:
         translation = translator.translate(text, src='es', dest='en')
