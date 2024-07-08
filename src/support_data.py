@@ -1,11 +1,5 @@
 import re
 import bz2
-from langdetect import detect
-from googletrans import Translator
-
-
-
-translator = Translator()
 
 
 
@@ -44,21 +38,3 @@ def read_dataset(file_path):
         data.append((labels, review_title, text))
     
     return data
-
-
-
-def detect_language(text):
-    try:
-        first_two_words = ' '.join(text.split()[:10])
-        return detect(first_two_words)
-    except:
-        return 'unknown'
-    
-
-
-def translate_text(text, translator):
-    try:
-        translation = translator.translate(text, src='es', dest='en')
-        return translation.text
-    except:
-        return text
