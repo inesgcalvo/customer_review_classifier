@@ -17,6 +17,7 @@ import csv
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import tensorflow as tf
 
 # Options
 pd.options.display.float_format = '{:.2f}'.format
@@ -42,6 +43,8 @@ class Preprocessing:
             return self.next_step.process(data)
         return data
     
+
+
     @staticmethod
     def detect_language(text):
         '''
@@ -54,6 +57,8 @@ class Preprocessing:
         except:
             return 'unknown'
         
+
+
     def translate_text(text, translator):
         '''
         '''
@@ -63,43 +68,33 @@ class Preprocessing:
         except:
             return text
         
+
+
     def text_preprocessing(data):
         '''
         '''
         from tensorflow.keras.preprocessing.text import Tokenizer
         from tensorflow.keras.preprocessing.sequence import pad_sequences
 
+        tokenizer = Tokenizer(num_words=NUM_WORDS, oov_token='<OOV>')
+        tokenizer.fit_on_texts(data['text'])
+        sequences = tokenizer.texts_to_sequences(data['text'])
+        padded_sequences = pad_sequences(sequences, maxlen=MAX_SEQ_LEN)
+        # padded_sequences = return tf.convert_to_tensor(padded_sequences, dtype=tf.float32)
+        padded_sequences = np.array(padded_sequences, dtype=np.float32)
+        return padded_sequences
 
-        text_data = data['text']
 
-        # Text preprocessing
-        tokenizer = Tokenizer(num_words=NUM_WORDS)
-        tokenizer.fit_on_texts(text_data)
-        sequences = tokenizer.texts_to_sequences(text_data)
 
-        # Padding sequences
-        sequences = pad_sequences(
-            sequences, 
-            maxlen=MAX_SEQ_LEN, 
-            padding='post')
-
-        return sequences
 
     def encode_labels(data):
         '''
         '''
-        from tensorflow.keras.utils import to_categorical
-
         labels = pd.get_dummies(data['labels'], dtype=int)
-
-        print(f'\nLABELS:\n{labels[:5]}\n')
-
-        # One-hot encode labels
-        labels_encoded = to_categorical(
-            labels, 
-            num_classes=NUM_CLASSES)
-
-        return labels_encoded
+        # labels = tf.convert_to_tensor(labels['__label__1'], dtype=tf.float32)
+        labels = np.array(labels['__label__1'], dtype=np.float32)
+        print(f'\nLABELS:\n{labels[0]}\n')
+        return labels
 
 ######################################################################
 ######################################################################
@@ -163,15 +158,6 @@ class RemoveDuplicates(Preprocessing):
 
         print(f'ACTUAL SHAPE: {data.shape}')
 
-        return super().process(data)
-
-######################################################################
-
-class CorrectDataTypes(Preprocessing):
-
-    def process(self, data):
-        '''
-        '''
         return super().process(data)
 
 ######################################################################
@@ -263,16 +249,28 @@ class SplitDataset(Preprocessing):
         '''
         from sklearn.model_selection import train_test_split
 
+        padded_sequences = Preprocessing.text_preprocessing(data)
+        labels = Preprocessing.encode_labels(data)
+
         X_train, X_test, y_train, y_test = train_test_split(
-            Preprocessing.text_preprocessing(data), 
-            Preprocessing.encode_labels(data), 
+            padded_sequences, 
+            labels, 
             test_size=0.2, 
             random_state=RANDOM_SEED)
-
+        
         print('X_train shape:', X_train.shape)
+        print('X_test shape:', X_test.shape)
         print('y_train shape:', y_train.shape)
+        print('y_test shape:', y_test.shape)
+
+        # Save the split datasets if needed
+        self.save_to_csv(X_train, 'X_train.csv')
+        self.save_to_csv(X_test, 'X_test.csv')
+        self.save_to_csv(y_train, 'y_train.csv')
+        self.save_to_csv(y_test, 'y_test.csv')
 
         # Save data as CSV files
+        '''
         data_dir = os.path.join('..', 'data')
         os.makedirs(data_dir, exist_ok=True)
 
@@ -286,5 +284,24 @@ class SplitDataset(Preprocessing):
                 print(f'Error saving data to {filename}: {e}')
 
         print('\nData saved successfully to ../data directory in CSV format.')
+        ''';
 
         return X_train, X_test, y_train, y_test
+    
+
+
+    def save_to_csv(self, data, filename):
+        '''
+        '''
+        data_dir = '../data'
+        os.makedirs(data_dir, exist_ok=True)
+        filepath = os.path.join(data_dir, filename)
+
+        # If data is 1-dimensional, reshape it to 2D for CSV
+        if data.ndim == 1:  
+            data = data.reshape(-1, 1)
+
+        try:
+            np.savetxt(filepath, data, delimiter=',', fmt='%s')
+        except IOError as e:
+            print(f'Error saving data to {filename}: {e}')
