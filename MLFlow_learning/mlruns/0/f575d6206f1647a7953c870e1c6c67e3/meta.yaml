@@ -1,0 +1,15 @@
+artifact_uri: file:///home/ines/_code_/other_stuff/customer_review_classifier/MLFlow_learning/mlruns/0/f575d6206f1647a7953c870e1c6c67e3/artifacts
+end_time: 1721043501413
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f575d6206f1647a7953c870e1c6c67e3
+run_name: powerful-finch-863
+run_uuid: f575d6206f1647a7953c870e1c6c67e3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1721043499811
+status: 3
+tags: []
+user_id: ines
