@@ -1,5 +1,0 @@
-MLFLOW_TRACKING_URI = "http://localhost:5000/"
-
-client = MlflowClient(tracking_uri=MLFLOW_TRACKING_URI)
-mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-mlflow.set_experiment("V1")
