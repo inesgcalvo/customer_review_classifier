@@ -9,7 +9,7 @@ EMBEDDING_DIM = 50
 NUM_FILTERS = 64
 KERNEL_SIZE = 5
 NUM_CLASSES = 2
-SAMPLE_FRAC = 0.000001
+SAMPLE_FRAC = 0.0001
 EXPERIMENT_NAME = 'exp.1'
 MLFLOW_TRACKING_URI = 'http://localhost:5000/'
 
@@ -74,9 +74,9 @@ labels = tf.convert_to_tensor(y_train, dtype=tf.float32)
 with mlflow.start_run():
 
     client = MlflowClient(tracking_uri=MLFLOW_TRACKING_URI)
+
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     mlflow.set_experiment(EXPERIMENT_NAME)
-
     mlflow.log_param('RANDOM_SEED', RANDOM_SEED)
     mlflow.log_param('EPOCHS', EPOCHS)
     mlflow.log_param('BATCH_SIZE', BATCH_SIZE)
@@ -95,7 +95,7 @@ with mlflow.start_run():
         MaxPooling1D(pool_size=4, padding='same'),
         Flatten(),
         Dense(10, activation='relu'),
-        Dense(1, activation='sigmoid')
+        Dense(NUM_CLASSES, activation='sigmoid')
     ])
 
     # Compile the model
