@@ -3,15 +3,19 @@ VERBOSE = True
 RANDOM_SEED = 42
 EPOCHS = 10
 BATCH_SIZE = 32
-NUM_WORDS = 5000
-MAX_SEQ_LEN = 50
+
+NUM_WORDS = 15000
 EMBEDDING_DIM = 50
+MAX_SEQ_LEN = 50
 NUM_FILTERS = 64
 KERNEL_SIZE = 5
-NUM_CLASSES = 2
-SAMPLE_FRAC = 0.0001
-EXPERIMENT_NAME = 'exp.1'
-MLFLOW_TRACKING_URI = 'http://localhost:5000/'
+NUM_CLASSES = 1
+
+SAMPLE_FRAC = 0.5
+
+# EXPERIMENT_NAME = 'exp.1'
+# MLFLOW_TRACKING_URI = 'http://localhost:5000/'
+
 
 
 # Ignore Warnings
@@ -24,7 +28,7 @@ from tqdm.notebook import tqdm
 
 import mlflow
 import mlflow.keras
-from mlflow import MlflowClient
+# from mlflow import MlflowClient
 from mlflow.models import infer_signature
 
 
@@ -73,10 +77,10 @@ labels = tf.convert_to_tensor(y_train, dtype=tf.float32)
 # MLflow Logging and Model Training
 with mlflow.start_run():
 
-    client = MlflowClient(tracking_uri=MLFLOW_TRACKING_URI)
+    # client = MlflowClient(tracking_uri=MLFLOW_TRACKING_URI)
 
-    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    mlflow.set_experiment(EXPERIMENT_NAME)
+    # mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    # mlflow.set_experiment(EXPERIMENT_NAME)
     mlflow.log_param('RANDOM_SEED', RANDOM_SEED)
     mlflow.log_param('EPOCHS', EPOCHS)
     mlflow.log_param('BATCH_SIZE', BATCH_SIZE)
